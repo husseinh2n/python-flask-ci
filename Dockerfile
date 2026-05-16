@@ -17,8 +17,9 @@ COPY . .
 EXPOSE 5000
 
 # Define the command to run the application using Gunicorn
-# Gunicorn is a production-ready WSGI server.
+# Using 'python -m gunicorn' explicitly ensures Gunicorn is run via the Python interpreter
+# where it was installed, which can be more robust in some Docker environments.
 # -w 4: Run with 4 worker processes (adjust based on CPU cores).
 # -b 0.0.0.0:5000: Bind to all network interfaces on port 5000.
 # app:app: Specifies the application entry point (the 'app' object in 'app.py').
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["python", "-m", "gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
