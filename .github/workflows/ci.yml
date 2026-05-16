@@ -46,8 +46,32 @@ jobs:
         # pytest and flake8 are now installed via requirements-dev.txt,
         # so explicit installation here is no longer needed.
 
-    - name: Run tests
-      run: pytest
+    - name: Run Unit Tests
+      run: pytest test_app.py
+
+    - name: Start Docker Compose for Integration Tests
+      run: |
+        docker compose up -d --build
+        echo "Waiting for Flask app to be ready..."
+        # Use curl to check for HTTP 200 status from the Flask app
+        for i in $(seq 1 30); do
+          response_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/)
+          if [ "$response_code" -eq 200 ]; then
+            echo "Flask app is up and running!"
+            exit 0
+          fi
+          echo "Attempt $i: App not ready yet (HTTP status: $response_code), waiting 2 seconds..."
+          sleep 2
+        done
+        echo "Flask app did not become available in time."
+        exit 1 # Fail the step if the app doesn't become ready
+
+    - name: Run Integration Tests
+      run: pytest test_integration.py
 
     - name: Lint code with Flake8
       run: flake8 .
+
+    - name: Stop Docker Compose
+      if: always() # Ensure this step runs even if previous steps fail
+      run: docker compose down --volumes --rmi all
