@@ -17,7 +17,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.x' # Use a specific version like '3.9', '3.10', '3.11' if needed
+        python-version: '3.9' # Use a specific version like '3.9' to match Dockerfile for consistency
 
     - name: Cache pip dependencies
       uses: actions/cache@v3

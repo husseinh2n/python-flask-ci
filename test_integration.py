@@ -22,12 +22,15 @@ def docker_compose_up_down():
     """
     print("\n--- Starting Docker Compose services ---")
     try:
-        # Use subprocess to run 'docker compose up -d'
+        # Use subprocess to run 'docker-compose up -d'
+        # Changed 'docker compose' to 'docker-compose' for broader compatibility
+        # on GitHub Actions runners, as the hyphenated version is often more
+        # reliably found in the PATH for subprocess calls.
         # '-d' runs containers in detached mode (in the background).
         # '--build' ensures images are rebuilt, useful for fresh tests or changes.
         # 'check=True' raises an exception if the command fails.
         # 'capture_output=True' captures stdout/stderr, preventing it from cluttering console.
-        subprocess.run(["docker", "compose", "up", "-d", "--build"], check=True, capture_output=True)
+        subprocess.run(["docker-compose", "up", "-d", "--build"], check=True, capture_output=True)
 
         # Wait for the Flask application to be ready.
         # This is crucial for integration tests to avoid connection errors
@@ -59,11 +62,12 @@ def docker_compose_up_down():
         # This block runs after all tests using this fixture have completed,
         # ensuring cleanup even if tests fail.
         print("\n--- Stopping Docker Compose services ---")
-        # Use subprocess to run 'docker compose down'
+        # Use subprocess to run 'docker-compose down'
+        # Changed 'docker compose' to 'docker-compose' for consistency.
         # '--volumes' removes named volumes declared in the `volumes` section of the Compose file
         # and anonymous volumes attached to containers.
         # '--rmi all' removes all images used by any service, ensuring a clean slate for next run.
-        subprocess.run(["docker", "compose", "down", "--volumes", "--rmi", "all"], check=True, capture_output=True)
+        subprocess.run(["docker-compose", "down", "--volumes", "--rmi", "all"], check=True, capture_output=True)
         print("--- Docker Compose services stopped ---")
 
 # All tests in this file will implicitly use the 'docker_compose_up_down' fixture
