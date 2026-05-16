@@ -22,8 +22,9 @@ jobs:
     - name: Cache pip dependencies
       uses: actions/cache@v3
       with:
+        # Include both requirements.txt and requirements-dev.txt in the hash for cache key
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt', 'requirements-dev.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
 
@@ -36,8 +37,14 @@ jobs:
         else
           echo "requirements.txt not found. Skipping project dependency installation."
         fi
-        # Install development/CI specific tools if not in requirements.txt
-        pip install pytest flake8
+        # Install development/CI specific tools from requirements-dev.txt
+        if [ -f requirements-dev.txt ]; then
+          pip install -r requirements-dev.txt
+        else
+          echo "requirements-dev.txt not found. Skipping dev dependency installation."
+        fi
+        # pytest and flake8 are now installed via requirements-dev.txt,
+        # so explicit installation here is no longer needed.
 
     - name: Run tests
       run: pytest
