@@ -1,0 +1,8 @@
+.git # Ignore the Git version control directory
+.venv # Ignore Python virtual environment directory
+__pycache__ # Ignore Python compiled bytecode cache
+*.pyc # Ignore Python compiled files
+*.log # Ignore log files
+.DS_Store # Ignore macOS specific files
+.vscode # Ignore VS Code configuration files
+.github # Exclude GitHub Actions workflows from the Docker image

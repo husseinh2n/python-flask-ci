@@ -1,0 +1,12 @@
+version: '3.8' # Specify the Docker Compose file format version
+
+services:
+  web: # Define a service named 'web'
+    build: . # Instruct Docker Compose to build the image using the Dockerfile in the current directory
+    ports:
+      - "5000:5000" # Map port 5000 on the host to port 5000 in the container
+    volumes:
+      - .:/app # Mount the current directory on the host to /app inside the container.
+               # This is useful for development as code changes on the host are reflected in the container.
+    # environment: # Optional: Set environment variables for the container
+    #   FLASK_ENV: development # Example: Set Flask environment variable for development mode
